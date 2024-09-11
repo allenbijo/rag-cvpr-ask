@@ -5,18 +5,23 @@ import pickle
 import fetch_papers
 
 
+# Function to vectorize the papers
 def vectorize_papers(papers, paper_names):
 	text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 	splits = text_splitter.split_documents(papers)
 	if splits:
 		embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 		db = FAISS.from_documents(splits, embeddings)
+
+		# Load existing data
 		try:
 			dbe = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 			db.merge_from(dbe)
 		except:
 			pass
 		db.save_local("faiss_index")
+
+		# Save paper names
 		try:
 			with open("papers.pkl", 'rb') as f:
 				existing_data = pickle.load(f)

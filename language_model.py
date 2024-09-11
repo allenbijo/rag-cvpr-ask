@@ -9,6 +9,7 @@ from langchain_huggingface import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 
+# Function to get the data from database
 def get_data():
 	try:
 		embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
@@ -19,6 +20,7 @@ def get_data():
 		return False
 
 
+# Function to retrieve the model
 def prepare_model():
 	model_name = "google/gemma-2-2b-it"
 	tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -29,6 +31,7 @@ def prepare_model():
 	return llm
 
 
+# Function to setup the chain
 def setup(llm):
 	if db := get_data():
 		retriever = db.as_retriever(search_type="similarity")
@@ -68,4 +71,4 @@ def setup(llm):
 if __name__ == '__main__':
 	llm = prepare_model()
 	chain = setup(llm)
-	# chain.invoke('Who wrote the paper about LEIA')
+	chain.invoke('Who wrote the paper about LEIA')

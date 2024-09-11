@@ -7,6 +7,7 @@ login(os.getenv('hf_token'))
 
 st.title("Arxiv Paper RAG")
 
+# Create a sidebar to show the fetched papers
 with st.sidebar:
     st.markdown('# Papers')
 
@@ -24,6 +25,7 @@ with st.sidebar:
     st.markdown(f'Fetched {len(existing_data)} papers')
     st.markdown('\n\n'.join(existing_data))
 
+# Initialize model
 if "chain" not in st.session_state:
     st.session_state['model'] = language_model.prepare_model()
 

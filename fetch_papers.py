@@ -4,7 +4,9 @@ from langchain_community.document_loaders import ArxivLoader
 import pickle
 
 
+# Get paper names from arxiv
 def get_paper_names():
+	# Get 10 papers after k
 	def find_papers(k=0):
 		url = f"https://arxiv.org/list/cs.CV/recent?skip={k}&show=10"
 
@@ -17,6 +19,7 @@ def get_paper_names():
 			papers.append(a_tag.text[17:-9])
 		return papers
 
+	# Check if papers have already been fetched
 	try:
 		with open('papers.pkl', 'rb') as f:
 			papers = []
@@ -29,8 +32,8 @@ def get_paper_names():
 				for i in range(paper.index(existing_data[0])):
 					papers.append(paper[i])
 	except:
-		existing_data = []
 		papers = find_papers(15)
+
 	return papers
 
 
