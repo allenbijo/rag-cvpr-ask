@@ -1,19 +1,36 @@
 import requests
 from bs4 import BeautifulSoup
 from langchain_community.document_loaders import ArxivLoader
+import pickle
 
 
-def get_paper_names(n=10):
-	url = f"https://arxiv.org/list/cs.CV/recent?skip=0&show={n}"
+def get_paper_names():
+	def find_papers(k=0):
+		url = f"https://arxiv.org/list/cs.CV/recent?skip={k}&show=10"
 
-	response = requests.get(url)
+		response = requests.get(url)
 
-	soup = BeautifulSoup(response.content, "html.parser")
+		soup = BeautifulSoup(response.content, "html.parser")
 
-	papers = []
-	for a_tag in soup.find_all('div', class_='list-title mathjax'):
-		papers.append(a_tag.text[17:-9])
+		papers = []
+		for a_tag in soup.find_all('div', class_='list-title mathjax'):
+			papers.append(a_tag.text[17:-9])
+		return papers
 
+	try:
+		with open('papers.pkl', 'rb') as f:
+			papers = []
+			k = 0
+			existing_data = pickle.load(f)
+			while (paper := find_papers(k))[-1] not in existing_data:
+				k += 10
+				papers.extend(paper)
+			else:
+				for i in range(paper.index(existing_data[0])):
+					papers.append(paper[i])
+	except:
+		existing_data = []
+		papers = find_papers(15)
 	return papers
 
 

@@ -1,0 +1,8 @@
+beautifulsoup4
+langchain_community
+langchain_core
+langchain_huggingface
+Requests
+streamlit
+transformers
+faiss-cpu
